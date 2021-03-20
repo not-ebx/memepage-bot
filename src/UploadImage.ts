@@ -5,7 +5,7 @@ import { get } from 'request-promise'; // request is already declared as a depen
 import probe from 'probe-image-size';
 import { Post } from './objects/Post';
 import { isInDatabase } from './database/DatabaseHandler';
-import { logError, logInfo } from './logger';
+import { logError } from './logger';
 
 // TODO: Categorize TYPE on posts too! SOONTM For Videos :)
 export const checkValidImages = async (posts : Post[]) => {
@@ -55,9 +55,6 @@ export const uploadPicture = async (title: string, imageUrl : string) => {
     }
     catch(err){
         logError(err);
-        logInfo("Image URL: " + imageUrl);
-        logInfo("Image Caption: " + title);
-
         return false;
     }
 }
