@@ -12,7 +12,7 @@ import { waitFor } from './utils/Wait';
 //uploadPicture("https://picsum.photos/800/800");
 
 const getImagePosts = async () => {
-    const memeSource = "https://www.reddit.com/r/cursedmemes/top.json";
+    const memeSource = "https://www.reddit.com/r/cursedmemes/top/.json"; // Default is 22 posts :)
     try {
         const memeSourceJson = await axios.get(memeSource);
         const redditPosts : any[] = memeSourceJson.data['data']['children'];
@@ -38,7 +38,8 @@ const getImagePosts = async () => {
         return postImages;
     }
     catch(exception) {
-        console.log("ERROR: " + exception);
+        logError("Error during getImagePosts...");
+        logError(exception);
         return null;
     }
 }

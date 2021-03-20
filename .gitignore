@@ -4,4 +4,5 @@ node_modules
 
 # Environment 
 .env
+database.json
 
