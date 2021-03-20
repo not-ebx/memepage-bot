@@ -4,20 +4,11 @@ import { Post } from './objects/Post';
 import { addToDatabase } from './database/DatabaseHandler';
 import { configLogger, logError, logInfo } from './logger';
 import { waitFor } from './utils/Wait';
+import { REDDIT_URLS } from './constats';
 
 // Get posts from reddit
 // Every X hours, upload the best one (?)
 // rinse and repeat.
-
-//uploadPicture("https://picsum.photos/800/800");
-
-const REDDIT_URLS = [
-    "https://www.reddit.com/r/cursedmemes/top/.json",
-    "https://www.reddit.com/r/shitposting/top/.json",
-    "https://www.reddit.com/r/Cursed_Images/top/.json",
-    "https://www.reddit.com/r/dankmemes/top/.json",
-    "https://www.reddit.com/r/bonehurtingjuice/top/.json",
-];
 
 const getImagePosts = async () => {
     let allPosts : Post[] = [];
@@ -72,7 +63,6 @@ const main = async () => {
         const ret = uploadPicture(images[selected].caption, images[selected].data);
 
         // If ret is false, we will wait 5 minutes then we post.
-        
         if(!ret){
             logError(images[selected].data + " failed. Waiting to start again...");
             await waitFor(1000*60*5);

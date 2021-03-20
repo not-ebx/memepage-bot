@@ -21,10 +21,6 @@ const createDatabaseIfDoesNotExists = () => {
     }
 }
 
-/*export const saveToDatabase = (posts : Post[]) => {
-    const db : PostData[] = readDatabase(); // Already filtered i guess
-    fs.writeFileSync("database.json", JSON.stringify(db));
-}*/
 
 export const addToDatabase = ( post : Post ) => {
     const db : PostData[] = readDatabase();

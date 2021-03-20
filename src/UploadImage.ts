@@ -1,21 +1,27 @@
 /* tslint:disable:no-console */
-import 'dotenv/config';
 import { IgApiClient } from 'instagram-private-api';
 import { get } from 'request-promise'; // request is already declared as a dependency of the library
 import probe from 'probe-image-size';
 import { Post } from './objects/Post';
 import { isInDatabase } from './database/DatabaseHandler';
 import { logError } from './logger';
+import { defaultCaption, PASSWORD, USERNAME } from './constats';
 
 // TODO: Categorize TYPE on posts too! SOONTM For Videos :)
 export const checkValidImages = async (posts : Post[]) => {
     const filteredPosts : Post[] = [];
+
+    // Regex to find if it is an image
     const regex = /(\w|\d)*.(png|jpeg|jpg)/;
     
+    // For post in posts...
     for(let i = 0; i<posts.length ; i++){
+        // Check the filter, both db and regex
         if(!isInDatabase(posts[i]) && regex.test(posts[i].data)){
             const dimensions = await probe(posts[i].data);
             const ratio : number = dimensions.width/dimensions.height;
+
+            // Check if the ratio is correct for instagram post
             if((ratio >= 1 && ratio <= 1.91)){
                 filteredPosts.push(posts[i]);
             }
@@ -26,21 +32,18 @@ export const checkValidImages = async (posts : Post[]) => {
 }
 
 export const uploadPicture = async (title: string, imageUrl : string) => {
-    const caption = `${title}\n.\n.\n.\n.\nTags! Ignore this.\n#meme #dankmeme #reddit #bot #automatedcontent #cursedmeme #cursed #funny #cat #pet #programming`;
+    const caption = `${title} ${defaultCaption}`;
 
     const ig = new IgApiClient();
-    ig.state.generateDevice(process.env.IG_USERNAME ? process.env.IG_USERNAME : "" );
+    ig.state.generateDevice(USERNAME);
     //ig.state.proxyUrl = process.env.IG_PROXY;
-    const auth = await ig.account.login(process.env.IG_USERNAME ? process.env.IG_USERNAME : "", process.env.IG_PASSWORD ? process.env.IG_PASSWORD : "");
-    console.log(JSON.stringify(auth));
-
-    // getting random square image from internet as a Buffer
+    const auth = await ig.account.login(USERNAME,PASSWORD);
+    console.log(auth);
 
     const imageBuffer = await get({
-        url: imageUrl, // random picture with 800x800 size
-        encoding: null, // this is required, only this way a Buffer is returned
+        url: imageUrl, 
+        encoding: null, 
     });
-
 
     try{
         const publishResult = await ig.publish.photo({
@@ -48,12 +51,12 @@ export const uploadPicture = async (title: string, imageUrl : string) => {
             caption: caption, // nice caption (optional)
             
         });
-        
 
         console.log(publishResult) // publishResult.status should be "ok"
         return true;
     }
     catch(err){
+        // Errors will be logged
         logError(err);
         return false;
     }
