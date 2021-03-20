@@ -51,10 +51,13 @@ export const uploadPicture = async (title: string, imageUrl : string) => {
         
 
         console.log(publishResult) // publishResult.status should be "ok"
+        return true;
     }
     catch(err){
         logError(err);
         logInfo("Image URL: " + imageUrl);
         logInfo("Image Caption: " + title);
+
+        return false;
     }
 }

@@ -1,8 +1,9 @@
 import { checkValidImages, uploadPicture } from './UploadImage';
 import axios from 'axios';
 import { Post } from './objects/Post';
-import { addToDatabase, isInDatabase } from './database/DatabaseHandler';
+import { addToDatabase } from './database/DatabaseHandler';
 import { configLogger, logError } from './logger';
+import { waitFor } from './utils/Wait';
 
 // Get posts from reddit
 // Every X hours, upload the best one (?)
@@ -53,7 +54,13 @@ const main = async () => {
 
         addToDatabase(images[selected]);
         //uploadPicture(images[selected].caption, images[selected].data);
-        uploadPicture("test caption", "https://i.redd.it/sw651simx2o61.png");
+        const ret = await uploadPicture("test caption", "https://i.redd.it/sw651simx2o61.png");
+
+        // If ret is false, we will wait 5 minutes then we post.
+        if(!ret){
+            await waitFor(1000*60*5);
+            main();
+        }
     }
     else{
         logError("NO MORE POSTS FOUND sad face");
