@@ -6,3 +6,5 @@ node_modules
 .env
 database.json
 
+yarn.*
+package-lock.json
