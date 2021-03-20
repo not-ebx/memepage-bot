@@ -29,9 +29,9 @@ export const uploadPicture = async (title: string, imageUrl : string) => {
     const caption = `${title}\n.\n.\n.\n.\nTags! Ignore this.\n#meme #dankmeme #reddit #bot #automatedcontent #cursedmeme #cursed #funny #cat #pet #programming`;
 
     const ig = new IgApiClient();
-    ig.state.generateDevice(process.env.IG_USERNAME);
+    ig.state.generateDevice(process.env.IG_USERNAME ? process.env.IG_USERNAME : "" );
     //ig.state.proxyUrl = process.env.IG_PROXY;
-    const auth = await ig.account.login(process.env.IG_USERNAME, process.env.IG_PASSWORD);
+    const auth = await ig.account.login(process.env.IG_USERNAME ? process.env.IG_USERNAME : "", process.env.IG_PASSWORD ? process.env.IG_PASSWORD : "");
     console.log(JSON.stringify(auth));
 
     // getting random square image from internet as a Buffer
