@@ -4,37 +4,42 @@ import { Post } from './objects/Post';
 import { addToDatabase } from './database/DatabaseHandler';
 import { configLogger, logError, logInfo } from './logger';
 import { waitFor } from './utils/Wait';
-import { REDDIT_URLS } from './constats';
+import { REDDIT_SECTION, REDDIT_URLS } from './constats';
 
 // Get posts from reddit
 // Every X hours, upload the best one (?)
 // rinse and repeat.
 
+
+
 const getImagePosts = async () => {
     let allPosts : Post[] = [];
     try {
         for(let i = 0; i<REDDIT_URLS.length; i++){
-            const memeSourceJson = await axios.get(REDDIT_URLS[i]);
-            const redditPosts : any[] = memeSourceJson.data['data']['children'];
-            //console.log(redditPosts);
+            for(let j = 0; j<REDDIT_SECTION.length; j++){
+                const memeSourceJson = await axios.get(REDDIT_URLS[i] + REDDIT_SECTION[j]);
+                console.log(REDDIT_URLS[i] + REDDIT_SECTION[j]);
+                const redditPosts : any[] = memeSourceJson.data['data']['children'];
+                //console.log(redditPosts);
 
-            // First, filter the ones that are not an image.
-            // Image location: 'url_overriden_by_dest' -> *.png / *.jpg
-            const postData = redditPosts.map(
-                (post : any) => {
-                    const newPost : Post = {
-                        id: post['data']['name'],
-                        type: "image",
-                        caption: post['data']['title'],
-                        data: post['data']['url_overridden_by_dest']
+                // First, filter the ones that are not an image.
+                // Image location: 'url_overriden_by_dest' -> *.png / *.jpg
+                const postData = redditPosts.map(
+                    (post : any) => {
+                        const newPost : Post = {
+                            id: post['data']['name'],
+                            type: "image",
+                            caption: post['data']['title'],
+                            data: post['data']['url_overridden_by_dest']
+                        }
+                        return newPost;
                     }
-                    return newPost;
-                }
-            );
+                );
 
-            // Filter the array, get only images.
-            const postImages = await checkValidImages(postData); 
-            allPosts = allPosts.concat(postImages);
+                // Filter the array, get only images.
+                const postImages = await checkValidImages(postData); 
+                allPosts = allPosts.concat(postImages);
+            }
         }
 
         logInfo("Selected " +allPosts.length + " posts.");
@@ -49,29 +54,23 @@ const getImagePosts = async () => {
 
 const main = async () => {
     const images = await getImagePosts();
-    console.log(images);
-    console.log(images?.length);
     // Select a random one
     if(images && images.length > 0){
         const selected = Math.floor(Math.random() * Math.floor(images.length));
+        console.log(images);
         console.log(`SELECTED IMAGE: ${selected} / ${images.length-1}`);
         console.log(`URL: ${images[selected].data}`)
-        logInfo("Selected imageUrl: " + images[selected].data);
 
+        
         addToDatabase(images[selected]);
-
-        const ret = uploadPicture(images[selected].caption, images[selected].data);
-
-        // If ret is false, we will wait 5 minutes then we post.
-        if(!ret){
-            logError(images[selected].data + " failed. Waiting to start again...");
-            await waitFor(1000*60*5);
-            logInfo("Starting main again.");
-            main();
-        }
-        else{
-            logInfo("Succesful post for "+images[selected].data);
-        }
+        uploadPicture(images[selected].caption, images[selected].data)
+        .catch(
+            async (error) => {
+                logError(error);
+                await waitFor(1000*30);
+                main();
+            }
+        );
         
     }
     else{
@@ -80,8 +79,6 @@ const main = async () => {
 }
 
 configLogger();
-//logError("Test");
-
 
 main();
 setInterval(

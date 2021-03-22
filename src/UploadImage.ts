@@ -4,7 +4,6 @@ import { get } from 'request-promise'; // request is already declared as a depen
 import probe from 'probe-image-size';
 import { Post } from './objects/Post';
 import { isInDatabase } from './database/DatabaseHandler';
-import { logError } from './logger';
 import { defaultCaption, PASSWORD, USERNAME } from './constats';
 
 // TODO: Categorize TYPE on posts too! SOONTM For Videos :)
@@ -36,7 +35,6 @@ export const uploadPicture = async (title: string, imageUrl : string) => {
 
     const ig = new IgApiClient();
     ig.state.generateDevice(USERNAME);
-    //ig.state.proxyUrl = process.env.IG_PROXY;
     const auth = await ig.account.login(USERNAME,PASSWORD);
     console.log(auth);
 
@@ -45,19 +43,11 @@ export const uploadPicture = async (title: string, imageUrl : string) => {
         encoding: null, 
     });
 
-    try{
-        const publishResult = await ig.publish.photo({
-            file: imageBuffer, // image buffer, you also can specify image from your disk using fs
-            caption: caption, // nice caption (optional)
-            
-        });
 
-        console.log(publishResult) // publishResult.status should be "ok"
-        return true;
-    }
-    catch(err){
-        // Errors will be logged
-        logError(err);
-        return false;
-    }
+    // We return the promise, so we can handle the error in the main function    
+    return ig.publish.photo({
+        file: imageBuffer, // image buffer, you also can specify image from your disk using fs
+        caption: caption, // nice caption (optional)
+        
+    });
 }
