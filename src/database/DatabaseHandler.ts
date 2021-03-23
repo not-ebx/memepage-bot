@@ -1,4 +1,4 @@
-import { Post } from "src/objects/Post";
+import { ImagePost, VideoPost } from "../objects/Post";
 import * as fs from 'fs';
 
 const DB_LOCATION = "./database.json";
@@ -22,10 +22,10 @@ const createDatabaseIfDoesNotExists = () => {
 }
 
 
-export const addToDatabase = ( post : Post ) => {
+export const addToDatabase = ( post : ImagePost | VideoPost ) => {
     const db : PostData[] = readDatabase();
     const newPostData : PostData = {
-        dataUrl : post.data,
+        dataUrl : post.url,
         creationDate: (new Date(Date.now() + 604800000)).getTime()
     }
 
@@ -49,11 +49,11 @@ export const readDatabase = () => {
     return filteredDatabase;
 }
 
-export const isInDatabase = (post: Post) => {
+export const isInDatabase = (post: ImagePost | VideoPost) => {
     const database : PostData[] = readDatabase();
 
     const isIn : boolean = database.some(
-        (postData : PostData) => postData.dataUrl === post.data
+        (postData : PostData) => postData.dataUrl === post.url
     )
 
     return isIn;

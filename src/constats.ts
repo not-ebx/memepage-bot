@@ -21,5 +21,5 @@ export const USERNAME = process.env.IG_USERNAME ? process.env.IG_USERNAME : "";
 export const PASSWORD = process.env.IG_PASSWORD ? process.env.IG_PASSWORD : "";
 
 
-export const defaultCaption = "\n.\n.\n.\nIf you want an image to be removed / credits on a picture, just DM me!\nTags! Ignore this.\n#meme #cats #animals #chonker #kitty #cursed #loafcat #cursedcat #funnycat #animals #funny #cat #pet #aww #chonky";
+export const defaultCaption = "\n.\n.\n.\nIf you want an image to be removed just DM me!\nTags! Ignore this.\n#meme #cats #animals #chonker #kitty #cursed #loafcat #cursedcat #funnycat #animals #funny #cat #pet #aww #chonky #cute #cutecat #neko";
 

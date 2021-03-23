@@ -2,13 +2,13 @@
 import { IgApiClient } from 'instagram-private-api';
 import { get } from 'request-promise'; // request is already declared as a dependency of the library
 import probe from 'probe-image-size';
-import { Post } from './objects/Post';
+import { ImagePost } from './objects/Post';
 import { isInDatabase } from './database/DatabaseHandler';
 import { defaultCaption, PASSWORD, USERNAME } from './constats';
 
 // TODO: Categorize TYPE on posts too! SOONTM For Videos :)
-export const checkValidImages = async (posts : Post[]) => {
-    const filteredPosts : Post[] = [];
+export const checkValidImages = async (posts : ImagePost[]) => {
+    const filteredPosts : ImagePost[] = [];
 
     // Regex to find if it is an image
     const regex = /(\w|\d)*.(png|jpeg|jpg)/;
@@ -16,8 +16,8 @@ export const checkValidImages = async (posts : Post[]) => {
     // For post in posts...
     for(let i = 0; i<posts.length ; i++){
         // Check the filter, both db and regex
-        if(!isInDatabase(posts[i]) && regex.test(posts[i].data)){
-            const dimensions = await probe(posts[i].data);
+        if(!isInDatabase(posts[i]) && regex.test(posts[i].url)){
+            const dimensions = await probe(posts[i].url);
             const ratio : number = dimensions.width/dimensions.height;
 
             // Check if the ratio is correct for instagram post
