@@ -58,11 +58,11 @@ export const downloadAndUploadVideo = async (videoPost : VideoPost) => {
             timemarks: [0]
             
         })
-        .output(`videos/${timeStamp}.jpg`)
+        .output(`./videos/${timeStamp}.jpg`)
 
     await promiseCommand(tmbCmd);
 
-    if(fs.existsSync(`video/${timeStamp}.jpg`)){
+    if(fs.existsSync(`./video/${timeStamp}.jpg`)){
         console.log("Cant create thumbnail.");
         return Promise.reject(new Error('Could not generate thumbnail.'));
     }
@@ -72,12 +72,12 @@ export const downloadAndUploadVideo = async (videoPost : VideoPost) => {
         cmd = ffmpeg(videoPost.url)
             .input(videoPost.audioUrl)
             .outputOptions(["-c:v copy", "-c:a aac"])
-            .output(`videos/${timeStamp}.mp4`)
+            .output(`./videos/${timeStamp}.mp4`)
     }
     else{
         cmd = ffmpeg(videoPost.url)
             .outputOption("-c:v copy")
-            .output(`videos/${timeStamp}.mp4`)
+            .output(`./videos/${timeStamp}.mp4`)
     }
     
     promiseCommand(cmd)
@@ -85,7 +85,7 @@ export const downloadAndUploadVideo = async (videoPost : VideoPost) => {
         () => {
             console.log("Successful")
             // Upload the video
-            uploadVideo(ig, `videos/${timeStamp}.mp4`, `videos/${timeStamp}.jpg`, videoPost)
+            uploadVideo(ig, `./videos/${timeStamp}.mp4`, `./videos/${timeStamp}.jpg`, videoPost)
             .then(
                 () => {
                     succ = true;

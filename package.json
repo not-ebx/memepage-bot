@@ -8,7 +8,6 @@
         "watch": "tsc -w"
     },
     "devDependencies": {
-        "@types/bluebird": "^3.5.33",
         "@types/fluent-ffmpeg": "^2.1.16",
         "@types/luxon": "^1.26.2",
         "@types/probe-image-size": "^5.0.1",
@@ -18,7 +17,6 @@
     },
     "dependencies": {
         "axios": "^0.21.1",
-        "bluebird": "^3.7.2",
         "dotenv": "^8.2.0",
         "fluent-ffmpeg": "^2.1.2",
         "instagram-private-api": "^1.44.0",

@@ -31,7 +31,7 @@ const accountManager = async (postVideo : boolean) => {
 
         
         addToDatabase(selected[ri]);
-        if(!postVideo)
+        if(!postVideo || (postVideo && postDB.videoPosts.length < 1))
             uploadPicture(postDB.imagePosts[ri].caption, selected[ri].url)
             .catch(
                 async (error) => {
@@ -45,7 +45,7 @@ const accountManager = async (postVideo : boolean) => {
                 .catch(
                     async (error) => {
                         logError(error);
-                        await waitFor(1000*30);
+                        await waitFor(1000*30*1);
                         accountManager(postVideo);
                     }
                 )
