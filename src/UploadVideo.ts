@@ -80,7 +80,7 @@ export const downloadAndUploadVideo = async (videoPost : VideoPost) => {
             .output(`./videos/${timeStamp}.mp4`)
     }
     
-    promiseCommand(cmd)
+    return promiseCommand(cmd)
     .then(
         () => {
             console.log("Successful")
@@ -123,15 +123,7 @@ export const downloadAndUploadVideo = async (videoPost : VideoPost) => {
 
                 }
             )
-        })
-    .catch(
-        (err) => {
-            console.log(err);
-            logError(err);
         }
     );
 
-    return succ 
-    ? Promise.reject(new Error('Error while making the video'))
-    : Promise.resolve();
 }

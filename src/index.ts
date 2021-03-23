@@ -45,7 +45,7 @@ const accountManager = async (postVideo : boolean) => {
                 .catch(
                     async (error) => {
                         logError(error);
-                        await waitFor(1000*30*1);
+                        await waitFor(1000*30);
                         accountManager(postVideo);
                     }
                 )
@@ -71,7 +71,6 @@ const main = async () => {
     )
 }
 
-configLogger();
 main();
 
 
